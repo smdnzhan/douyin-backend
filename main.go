@@ -7,8 +7,9 @@ import (
 
 func main() {
 	util.Init()
+	util.InitOSS()
 	r := gin.Default()
 	initRouter(r)
-	r.Run("localhost:8080")
+	r.Run(":8080")
 
 }

@@ -16,15 +16,16 @@ type User struct {
 	Name string `json:"name,omitempty"`
 }
 
-// 在User基础上多了关注/被关注的信息，在其他响应中也会用到
-type UserDTO struct {
-	User
-	FollowCount   int64 `json:"follow_count,omitempty"`
-	FollowerCount int64 `json:"follower_count,omitempty"`
-	IsFollow      bool  `json:"is_follow,omitempty"`
+// UserInfo 在User基础上多了关注/被关注的信息，在其他响应中也会用到
+type UserInfo struct {
+	Id            int64  `json:"id,omitempty"`
+	Name          string `json:"name,omitempty"`
+	FollowCount   int64  `json:"follow_count,omitempty"`
+	FollowerCount int64  `json:"follower_count,omitempty"`
+	IsFollow      bool   `json:"is_follow,omitempty"`
 }
 
-type UserResponse struct {
+type UserInfoResponse struct {
 	Response Response
-	UserDTO  UserDTO
+	UserInfo UserInfo `json:"user"`
 }
