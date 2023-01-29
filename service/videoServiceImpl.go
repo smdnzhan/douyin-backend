@@ -2,6 +2,7 @@ package service
 
 import (
 	"douyin-backend/dao"
+	"douyin-backend/entity"
 	"douyin-backend/util"
 	uuid "github.com/satori/go.uuid"
 	"log"
@@ -56,4 +57,12 @@ func (videoService *VideoServiceImpl) Publish(data *multipart.FileHeader, userId
 	}
 	log.Printf("方法dao.Save(videoName, imageName, userId) 成功")
 	return nil
+}
+
+func (videoService *VideoServiceImpl) PublishList(userId int64) ([]entity.VideoPO, error) {
+	resultList, err := dao.NewVideoDaoInstance().VideoList(userId)
+	if err != nil {
+		log.Println("查询视频列表出错")
+	}
+	return resultList, err
 }

@@ -103,7 +103,8 @@ func UserInfo(c *gin.Context) {
 	}
 	log.Println("result:", result)
 	c.JSON(http.StatusOK, entity.UserInfoResponse{
-		Response: entity.Response{StatusCode: 0, StatusMsg: "Success"},
-		UserInfo: result,
+		StatusCode: 0,
+		StatusMsg:  "Success",
+		UserInfo:   result,
 	})
 }

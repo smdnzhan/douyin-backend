@@ -13,7 +13,7 @@ type UserDao struct {
 var userDao *UserDao
 var userOnce sync.Once
 
-// 返回UserDAO单例
+// NewUserDaoInstance 返回UserDAO单例
 func NewUserDaoInstance() *UserDao {
 	userOnce.Do(
 		func() {
