@@ -30,7 +30,7 @@ func QueryAuth() gin.HandlerFunc {
 				StatusMsg:  "Token Error",
 			})
 		} else {
-			println("token 正确")
+			println("token 正确,将userId设置进user_id:", token.Id)
 		}
 		context.Set("user_id", token.Id)
 		context.Next()

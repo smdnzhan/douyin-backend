@@ -26,6 +26,7 @@ type UserInfo struct {
 }
 
 type UserInfoResponse struct {
-	Response Response
-	UserInfo UserInfo `json:"user"`
+	StatusCode int32    `json:"status_code"`
+	StatusMsg  string   `json:"status_msg,omitempty"`
+	UserInfo   UserInfo `json:"user"`
 }

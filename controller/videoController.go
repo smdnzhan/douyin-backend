@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-// 27.01上传功能还需要用户登录状态校验
+// Publish 上传视频
 func Publish(c *gin.Context) {
 	data, err := c.FormFile("data")
 	//从上下文即context中取出user_id
@@ -42,4 +42,65 @@ func Publish(c *gin.Context) {
 		StatusCode: 0,
 		StatusMsg:  "uploaded successfully",
 	})
+}
+
+// 已知bug自己查自己会报错
+func PublishList(c *gin.Context) {
+	//目标用户Id
+	targetId := c.Query("user_id")
+	targetIdInt, _ := strconv.ParseInt(targetId, 10, 64)
+	log.Println("目标用户id：" + targetId)
+	//从上下文中获取 当前用户id
+	userId := c.GetString("user_id")
+	userIdInt, _ := strconv.ParseInt(userId, 10, 64)
+	log.Println("当前用户id：" + userId)
+	usi := service.NewUserServiceImplInstance()
+	var result entity.UserInfo
+	if len(userId) == 0 {
+		//当前用户是未登录用户
+		result = usi.UNGetUserInfo(targetIdInt)
+	} else {
+		result = usi.GetUserInfo(userIdInt, targetIdInt)
+	}
+	vsi := service.NewVideoServiceImplInstance()
+	csi := service.NewCommentServiceImplInstance()
+	lsi := service.NewLikeServiceImplInstance()
+	videoPOList, _ := vsi.PublishList(targetIdInt)
+	videoInfoList := make([]entity.VideoInfo, len(videoPOList), len(videoPOList))
+
+	log.Println("视频基础信息列表:", videoPOList)
+	//循环复制
+	for i := 0; i < len(videoPOList); i++ {
+		favoriteCount, _ := lsi.FavouriteCount(videoPOList[i].Id)
+		commentCount, _ := csi.CountFromVideoId(videoPOList[i].Id)
+		var isFavorite bool
+		if userId != targetId {
+			isFavorite, _ = lsi.IsFavorite(userIdInt, videoPOList[i].Id)
+		} else if len(userId) == 0 {
+			isFavorite = false
+		}
+		if userId == targetId {
+			isFavorite = true
+		}
+
+		element := entity.VideoInfo{
+			Id:            videoPOList[i].Id,
+			PlayUrl:       videoPOList[i].PlayUrl,
+			CoverUrl:      videoPOList[i].CoverUrl,
+			Title:         videoPOList[i].Title,
+			Author:        result,
+			FavoriteCount: favoriteCount,
+			CommentCount:  commentCount,
+			IsFavorite:    isFavorite,
+		}
+		log.Println("视频信息:", element)
+		videoInfoList[i] = element
+	}
+	log.Println("视频列表:", videoInfoList)
+	c.JSON(http.StatusOK, entity.VideoListResponse{
+		StatusCode:    0,
+		StatusMsg:     "查询用户视频列表成功",
+		VideoInfoList: videoInfoList,
+	})
+
 }

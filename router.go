@@ -14,4 +14,5 @@ func initRouter(r *gin.Engine) {
 	apiRouter.POST("/publish/action/", middleware.FormAuth(), controller.Publish)
 	//中间件判断用户是否登录
 	apiRouter.GET("/user/", middleware.QueryAuth(), controller.UserInfo)
+	apiRouter.GET("/publish/list/", middleware.QueryAuth(), controller.PublishList)
 }
