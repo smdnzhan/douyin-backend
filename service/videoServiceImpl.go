@@ -68,7 +68,6 @@ func (videoService *VideoServiceImpl) PublishList(userId int64) ([]entity.VideoP
 	}
 	return resultList, err
 }
-<<<<<<< HEAD
 
 // Feed 返回视频feed流，userId是当前登录的用户id
 func (videoService *VideoServiceImpl) Feed(lastTime time.Time, userId int64) ([]entity.VideoInfo, error) {
@@ -130,5 +129,3 @@ func (videoService *VideoServiceImpl) VideoPOToVideoInfo(video *entity.VideoPO, 
 func (videoService *VideoServiceImpl) GetVideoListByIds(videoIds []int64) ([]entity.VideoPO, error) {
 	return dao.NewVideoDaoInstance().GetVideosByList(videoIds)
 }
-=======
->>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d

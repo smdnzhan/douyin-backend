@@ -10,11 +10,8 @@ type VideoService interface {
 	Publish(data *multipart.FileHeader, userId int64, title string) error
 
 	PublishList(userId int64) ([]entity.VideoPO, error)
-<<<<<<< HEAD
 
 	VideoPOToVideoInfo(video *entity.VideoPO, videoInfo *entity.VideoInfo, userId int64)
 
 	GetVideoListByIds(videoIds []int64) ([]entity.VideoPO, error)
-=======
->>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 }

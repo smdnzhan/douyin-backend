@@ -10,4 +10,6 @@ const (
 	VIDEO_PATH       = "video"
 	COVER_PATH       = "cover"
 	ONEDAY           = 60 * 60 * 24
+	LIKE_STATUS      = 0
+	UNLIKE_STATUS    = 1
 )

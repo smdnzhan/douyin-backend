@@ -30,7 +30,6 @@ type UserInfoResponse struct {
 	StatusCode int32    `json:"status_code"`
 	StatusMsg  string   `json:"status_msg,omitempty"`
 	UserInfo   UserInfo `json:"user"`
-<<<<<<< HEAD
 }
 
 // UserLoginResponse 用户登录响应
@@ -39,6 +38,4 @@ type UserLoginResponse struct {
 	StatusMsg  string `json:"status_msg,omitempty"`
 	UserId     int64  `json:"id,omitempty"`
 	Token      string `json:"token"`
-=======
->>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 }

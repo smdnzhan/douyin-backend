@@ -38,10 +38,7 @@ func (*VideoDao) SaveVideo(playUrl string, coverUrl string, authorId int64, titl
 	return err
 }
 
-<<<<<<< HEAD
 // VideoList 根据用户id查出用户所有视频
-=======
->>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 func (*VideoDao) VideoList(userId int64) ([]entity.VideoPO, error) {
 	var result []entity.VideoPO
 	err := util.DB.Where(&entity.VideoPO{AuthorId: userId}).Find(&result).Error
@@ -51,7 +48,6 @@ func (*VideoDao) VideoList(userId int64) ([]entity.VideoPO, error) {
 	return result, err
 
 }
-<<<<<<< HEAD
 
 // VideoListBefore 返回某个时间点之前的视频切片，按时间倒序排列，数量在setting.go中默认设置为5
 func (*VideoDao) VideoListBefore(lastTime time.Time) ([]entity.VideoPO, error) {
@@ -76,5 +72,3 @@ func (*VideoDao) GetVideosByList(videoIds []int64) ([]entity.VideoPO, error) {
 	return result, err
 
 }
-=======
->>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
