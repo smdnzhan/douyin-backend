@@ -1,7 +1,10 @@
 package dao
 
 import (
+<<<<<<< HEAD
 	"douyin-backend/config"
+=======
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 	"douyin-backend/entity"
 	"douyin-backend/util"
 	"log"
@@ -41,7 +44,11 @@ func (*LikeDao) GetLikeInfo(userId int64, videoId int64) (entity.Like, error) {
 			return likeInfo, nil
 		} else {
 			//如果查询数据库失败，返回获取likeInfo信息失败
+<<<<<<< HEAD
 			log.Println("查询数据库失败，返回获取likeInfo信息失败")
+=======
+			log.Println(err.Error())
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 			return likeInfo, err
 		}
 	}
@@ -64,6 +71,7 @@ func (*LikeDao) GetLikeUserIdList(videoId int64) ([]int64, error) {
 		return likeUserIdList, nil
 	}
 }
+<<<<<<< HEAD
 
 // InsertLike 对没有历史记录视频和用户插入一条关系
 func (*LikeDao) InsertLike(videoId int64, userId int64) error {
@@ -125,3 +133,5 @@ func (*LikeDao) LikedVideoList(userId int64) ([]int64, error) {
 	log.Printf("liked videoList:", result)
 	return result, err
 }
+=======
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d

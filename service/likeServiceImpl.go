@@ -46,6 +46,7 @@ func (*LikeServiceImpl) FavouriteCount(videoId int64) (int64, error) {
 	userlist, err := dao.NewLikeDaoInstance().GetLikeUserIdList(videoId)
 	return int64(len(userlist)), err
 }
+<<<<<<< HEAD
 
 func (*LikeServiceImpl) UpdateLike(videoId int64, userId int64, status string) error {
 	var err error
@@ -75,3 +76,5 @@ func (*LikeServiceImpl) GetLikedVideoList(userId int64) ([]entity.VideoInfo, err
 	return result, err
 
 }
+=======
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d

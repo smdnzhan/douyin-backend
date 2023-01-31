@@ -45,7 +45,11 @@ func Publish(c *gin.Context) {
 	})
 }
 
+<<<<<<< HEAD
 // PublishList 已知bug 自己查自己会报错(follow表没有自己关注自己的)
+=======
+// 已知bug自己查自己会报错
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 func PublishList(c *gin.Context) {
 	//目标用户Id
 	targetId := c.Query("user_id")
@@ -69,12 +73,20 @@ func PublishList(c *gin.Context) {
 	videoPOList, _ := vsi.PublishList(targetIdInt)
 	videoInfoList := make([]entity.VideoInfo, len(videoPOList), len(videoPOList))
 
+<<<<<<< HEAD
 	//log.Println("视频基础信息列表:", videoPOList)
 
 	//循环赋值 此处可以用多协程优化 逻辑应该封装在在videoService里..？
 	for i := 0; i < len(videoPOList); i++ {
 		favoriteCount, _ := lsi.FavouriteCount(videoPOList[i].Id)
 		commentCount, _ := csi.CommentCountFromVideoId(videoPOList[i].Id)
+=======
+	log.Println("视频基础信息列表:", videoPOList)
+	//循环复制
+	for i := 0; i < len(videoPOList); i++ {
+		favoriteCount, _ := lsi.FavouriteCount(videoPOList[i].Id)
+		commentCount, _ := csi.CountFromVideoId(videoPOList[i].Id)
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 		var isFavorite bool
 		if userId != targetId {
 			isFavorite, _ = lsi.IsFavorite(userIdInt, videoPOList[i].Id)
@@ -85,17 +97,32 @@ func PublishList(c *gin.Context) {
 			isFavorite = true
 		}
 
+<<<<<<< HEAD
 		element := &entity.VideoInfo{
 			VideoPO:       videoPOList[i],
+=======
+		element := entity.VideoInfo{
+			Id:            videoPOList[i].Id,
+			PlayUrl:       videoPOList[i].PlayUrl,
+			CoverUrl:      videoPOList[i].CoverUrl,
+			Title:         videoPOList[i].Title,
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 			Author:        result,
 			FavoriteCount: favoriteCount,
 			CommentCount:  commentCount,
 			IsFavorite:    isFavorite,
 		}
+<<<<<<< HEAD
 		//log.Println("视频信息:", element)
 		videoInfoList[i] = *element
 	}
 	//log.Println("视频列表:", videoInfoList)
+=======
+		log.Println("视频信息:", element)
+		videoInfoList[i] = element
+	}
+	log.Println("视频列表:", videoInfoList)
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
 	c.JSON(http.StatusOK, entity.VideoListResponse{
 		StatusCode:    0,
 		StatusMsg:     "查询用户视频列表成功",
@@ -103,6 +130,7 @@ func PublishList(c *gin.Context) {
 	})
 
 }
+<<<<<<< HEAD
 
 func Feed(c *gin.Context) {
 	//获取用户Id
@@ -139,3 +167,5 @@ func Feed(c *gin.Context) {
 		VideoInfoList: videoInfoList,
 	})
 }
+=======
+>>>>>>> c2e33fd9cbe428c8b1809cbece6f06d4b70dde3d
