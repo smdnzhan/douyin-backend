@@ -24,7 +24,8 @@ func NewCommentServiceImplInstance() *CommentServiceImpl {
 	return commentServiceImpl
 }
 
-func (c CommentServiceImpl) CountFromVideoId(videoId int64) (int64, error) {
+// 查询评论数量
+func (c CommentServiceImpl) CommentCountFromVideoId(videoId int64) (int64, error) {
 	//先在缓存中查
 	//2.缓存中查不到则去数据库查
 	cntDao, err1 := dao.NewCommentDaoInstance().Count(videoId)

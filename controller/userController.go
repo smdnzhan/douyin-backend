@@ -9,12 +9,6 @@ import (
 	"strconv"
 )
 
-type UserLoginResponse struct {
-	Response entity.Response
-	UserId   int64  `json:"user_id,omitempty"`
-	Token    string `json:"token"`
-}
-
 // Register POST douyin/user/register/ 用户注册
 func Register(c *gin.Context) {
 	username := c.Query("username")
@@ -24,8 +18,9 @@ func Register(c *gin.Context) {
 
 	u := usi.GetUserPOByName(username)
 	if username == u.Name {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: entity.Response{StatusCode: 1, StatusMsg: "User already exist"},
+		c.JSON(http.StatusOK, entity.UserLoginResponse{
+			StatusCode: 1,
+			StatusMsg:  "User already exist",
 		})
 	} else {
 		//暂时不加密
@@ -41,10 +36,11 @@ func Register(c *gin.Context) {
 		//token暂不加密
 		token := username
 		log.Println("注册返回的id: ", u.Id)
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: entity.Response{StatusCode: 0, StatusMsg: "Success"},
-			UserId:   u.Id,
-			Token:    token,
+		c.JSON(http.StatusOK, entity.UserLoginResponse{
+			StatusCode: 0,
+			StatusMsg:  "Success",
+			UserId:     u.Id,
+			Token:      token,
 		})
 	}
 }
@@ -63,21 +59,24 @@ func Login(c *gin.Context) {
 	if encoderPassword == u.Password {
 		token, error := usi.GenerateToken(username)
 		if error == nil {
-			c.JSON(http.StatusOK, UserLoginResponse{
-				Response: entity.Response{StatusCode: 0, StatusMsg: "Success"},
-				UserId:   u.Id,
-				Token:    token,
+			c.JSON(http.StatusOK, entity.UserLoginResponse{
+				StatusCode: 0,
+				StatusMsg:  "Success",
+				UserId:     u.Id,
+				Token:      token,
 			})
 		} else {
-			c.JSON(http.StatusOK, UserLoginResponse{
-				Response: entity.Response{StatusCode: 1, StatusMsg: "fail"},
-				UserId:   0,
-				Token:    "",
+			c.JSON(http.StatusOK, entity.UserLoginResponse{
+				StatusCode: 1,
+				StatusMsg:  "fail",
+				UserId:     0,
+				Token:      "",
 			})
 		}
 	} else {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: entity.Response{StatusCode: 1, StatusMsg: "Username or Password Error"},
+		c.JSON(http.StatusOK, entity.UserLoginResponse{
+			StatusCode: 1,
+			StatusMsg:  "Username or Password Error",
 		})
 	}
 }

@@ -75,7 +75,7 @@ func (*FollowDao) IsFollow(userId int64, targetId int64) (*entity.Follow, error)
 			return nil, nil
 		}
 		log.Println(err.Error())
-		return nil, err
+		return &follow, err
 	}
 	log.Println("follow查询结果:", follow)
 	//正常情况，返回取到的值和空err.

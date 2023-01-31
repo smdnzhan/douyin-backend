@@ -46,3 +46,32 @@ func (*LikeServiceImpl) FavouriteCount(videoId int64) (int64, error) {
 	userlist, err := dao.NewLikeDaoInstance().GetLikeUserIdList(videoId)
 	return int64(len(userlist)), err
 }
+
+func (*LikeServiceImpl) UpdateLike(videoId int64, userId int64, status string) error {
+	var err error
+	//取消点赞必定已经点赞过 则更新关系
+	if status == "2" {
+		log.Println("取消点赞")
+		err = dao.NewLikeDaoInstance().UpdateLike(videoId, userId)
+		//未点赞过 或取消点赞而恢复
+	} else {
+		log.Println("点赞")
+		err = dao.NewLikeDaoInstance().UpdateLike(videoId, userId)
+	}
+
+	return err
+}
+
+func (*LikeServiceImpl) GetLikedVideoList(userId int64) ([]entity.VideoInfo, error) {
+	videoIds, err := dao.NewLikeDaoInstance().LikedVideoList(userId)
+	if err != nil {
+		log.Println("查询用户点赞视频出错")
+	}
+	resultList, err := NewVideoServiceImplInstance().GetVideoListByIds(videoIds)
+	result := make([]entity.VideoInfo, len(videoIds), len(videoIds))
+	for index, temp := range resultList {
+		NewVideoServiceImplInstance().VideoPOToVideoInfo(&temp, &result[index], userId)
+	}
+	return result, err
+
+}

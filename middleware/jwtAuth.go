@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"douyin-backend/config"
 	"douyin-backend/entity"
 	"douyin-backend/util"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,7 +21,7 @@ func QueryAuth() gin.HandlerFunc {
 				StatusMsg:  "Unauthorized",
 			})
 		}
-		fmt.Println("============auth:", auth)
+
 		token, err := util.ParseToken(auth)
 		if err != nil {
 			context.Abort()
@@ -37,6 +37,31 @@ func QueryAuth() gin.HandlerFunc {
 	}
 }
 
+// LoginOrNot 查询用户是否登录 未登录则将0作为user_id放入上下文 会将未登录用户放行
+func LoginOrNot() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		auth := context.Query("token")
+
+		if len(auth) == 0 {
+			context.Set("user_id", config.UNLOGIN_USER)
+		} else {
+
+			token, err := util.ParseToken(auth)
+			if err != nil {
+				context.Abort()
+				context.JSON(http.StatusUnauthorized, entity.Response{
+					StatusCode: -1,
+					StatusMsg:  "Token Error",
+				})
+			} else {
+				println("token 正确,将userId设置进user_id:", token.Id)
+				context.Set("user_id", token.Id)
+			}
+		}
+		context.Next()
+	}
+}
+
 func FormAuth() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		//auth := context.Request.Header.Get("Authorization")
@@ -48,8 +73,7 @@ func FormAuth() gin.HandlerFunc {
 				StatusMsg:  "Unauthorized",
 			})
 		}
-		fmt.Println("============auth:")
-		fmt.Println(auth)
+
 		claim, err := util.ParseToken(auth)
 		if err != nil {
 			context.Abort()

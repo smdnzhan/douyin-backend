@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // Publish 上传视频
@@ -44,7 +45,7 @@ func Publish(c *gin.Context) {
 	})
 }
 
-// 已知bug自己查自己会报错
+// PublishList 已知bug 自己查自己会报错(follow表没有自己关注自己的)
 func PublishList(c *gin.Context) {
 	//目标用户Id
 	targetId := c.Query("user_id")
@@ -68,11 +69,12 @@ func PublishList(c *gin.Context) {
 	videoPOList, _ := vsi.PublishList(targetIdInt)
 	videoInfoList := make([]entity.VideoInfo, len(videoPOList), len(videoPOList))
 
-	log.Println("视频基础信息列表:", videoPOList)
-	//循环复制
+	//log.Println("视频基础信息列表:", videoPOList)
+
+	//循环赋值 此处可以用多协程优化 逻辑应该封装在在videoService里..？
 	for i := 0; i < len(videoPOList); i++ {
 		favoriteCount, _ := lsi.FavouriteCount(videoPOList[i].Id)
-		commentCount, _ := csi.CountFromVideoId(videoPOList[i].Id)
+		commentCount, _ := csi.CommentCountFromVideoId(videoPOList[i].Id)
 		var isFavorite bool
 		if userId != targetId {
 			isFavorite, _ = lsi.IsFavorite(userIdInt, videoPOList[i].Id)
@@ -83,24 +85,57 @@ func PublishList(c *gin.Context) {
 			isFavorite = true
 		}
 
-		element := entity.VideoInfo{
-			Id:            videoPOList[i].Id,
-			PlayUrl:       videoPOList[i].PlayUrl,
-			CoverUrl:      videoPOList[i].CoverUrl,
-			Title:         videoPOList[i].Title,
+		element := &entity.VideoInfo{
+			VideoPO:       videoPOList[i],
 			Author:        result,
 			FavoriteCount: favoriteCount,
 			CommentCount:  commentCount,
 			IsFavorite:    isFavorite,
 		}
-		log.Println("视频信息:", element)
-		videoInfoList[i] = element
+		//log.Println("视频信息:", element)
+		videoInfoList[i] = *element
 	}
-	log.Println("视频列表:", videoInfoList)
+	//log.Println("视频列表:", videoInfoList)
 	c.JSON(http.StatusOK, entity.VideoListResponse{
 		StatusCode:    0,
 		StatusMsg:     "查询用户视频列表成功",
 		VideoInfoList: videoInfoList,
 	})
 
+}
+
+func Feed(c *gin.Context) {
+	//获取用户Id
+	userId := c.GetString("user_id")
+	userIdInt, _ := strconv.ParseInt(userId, 10, 64)
+	log.Println("当前用户id：" + userId)
+	vsi := service.NewVideoServiceImplInstance()
+	//获取时间戳
+	inputTime := c.Query("latest_time")
+	log.Printf("传入的时间" + inputTime)
+	var lastTime time.Time
+	if len(inputTime) != 0 && inputTime != "0" {
+		log.Println("用户传入了时间")
+		me, _ := strconv.ParseInt(inputTime, 10, 64)
+		if me > time.Now().Unix() {
+			lastTime = time.Now()
+		} else {
+			lastTime = time.Unix(me, 0)
+		}
+
+	} else {
+		log.Println("用户未传入时间")
+		lastTime = time.Now()
+	}
+	log.Printf("时间为:%v", lastTime)
+	videoInfoList, err := vsi.Feed(lastTime, userIdInt)
+	if err != nil {
+		log.Println("feed视频流出错")
+	}
+	c.JSON(http.StatusOK, entity.VideoListResponse{
+		StatusCode:    0,
+		StatusMsg:     "查询用户视频列表成功",
+		NextTime:      time.Now().Unix(),
+		VideoInfoList: videoInfoList,
+	})
 }

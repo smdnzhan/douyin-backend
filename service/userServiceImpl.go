@@ -123,12 +123,13 @@ func (usi *UserServiceImpl) GetUserInfo(userId int64, targetId int64) entity.Use
 	var flag bool
 	if is_follow == nil {
 		flag = false
-	}
-	if is_follow.Cancel == 0 {
-		flag = true
-	}
-	if is_follow.Cancel == 1 {
-		flag = false
+	} else {
+		if is_follow.Cancel == 0 {
+			flag = true
+		}
+		if is_follow.Cancel == 1 {
+			flag = false
+		}
 	}
 	//返回结果里不能带密码，所以新建一个User对象
 	userPO, err := dao.NewUserDaoInstance().GetUserPOById(targetId)

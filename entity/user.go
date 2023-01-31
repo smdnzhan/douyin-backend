@@ -20,13 +20,22 @@ type User struct {
 type UserInfo struct {
 	Id            int64  `json:"id,omitempty"`
 	Name          string `json:"name,omitempty"`
-	FollowCount   int64  `json:"follow_count,omitempty"`
-	FollowerCount int64  `json:"follower_count,omitempty"`
-	IsFollow      bool   `json:"is_follow,omitempty"`
+	FollowCount   int64  `json:"follow_count"`
+	FollowerCount int64  `json:"follower_count"`
+	IsFollow      bool   `json:"is_follow"`
 }
 
+// UserInfoResponse 用户信息响应
 type UserInfoResponse struct {
 	StatusCode int32    `json:"status_code"`
 	StatusMsg  string   `json:"status_msg,omitempty"`
 	UserInfo   UserInfo `json:"user"`
+}
+
+// UserLoginResponse 用户登录响应
+type UserLoginResponse struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,omitempty"`
+	UserId     int64  `json:"id,omitempty"`
+	Token      string `json:"token"`
 }

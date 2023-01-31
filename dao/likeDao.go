@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"douyin-backend/config"
 	"douyin-backend/entity"
 	"douyin-backend/util"
 	"log"
@@ -40,7 +41,7 @@ func (*LikeDao) GetLikeInfo(userId int64, videoId int64) (entity.Like, error) {
 			return likeInfo, nil
 		} else {
 			//如果查询数据库失败，返回获取likeInfo信息失败
-			log.Println(err.Error())
+			log.Println("查询数据库失败，返回获取likeInfo信息失败")
 			return likeInfo, err
 		}
 	}
@@ -62,4 +63,65 @@ func (*LikeDao) GetLikeUserIdList(videoId int64) ([]int64, error) {
 		//没查询到或者查询到结果，返回数量以及无报错
 		return likeUserIdList, nil
 	}
+}
+
+// InsertLike 对没有历史记录视频和用户插入一条关系
+func (*LikeDao) InsertLike(videoId int64, userId int64) error {
+	relation := entity.Like{
+		UserId:  userId,
+		VideoId: videoId,
+		Cancel:  config.LIKE_STATUS,
+	}
+	//gorm框架记得用地址
+	//reflect: reflect.Value.SetInt using unaddressable value
+	//	这种报错是应该传地址的时候传了值导致的
+	err := util.DB.Create(&relation).Error
+	if err != nil {
+		log.Println("添加点赞信息出错")
+	}
+
+	return err
+}
+
+// UpdateLike 恢复点赞或取消点赞
+func (*LikeDao) UpdateLike(videoId int64, userId int64) error {
+	var relation entity.Like
+	err := util.DB.Model(relation).
+		Where("user_id = ? AND video_id = ?", userId, videoId).
+		First(&relation).Error
+	if err != nil && err.Error() == "record not found" {
+		log.Println("新建点赞关系")
+		err = NewLikeDaoInstance().InsertLike(videoId, userId)
+	} else {
+		//恢复点赞或取消点赞
+		log.Println("更新点赞关系")
+		if relation.Cancel == config.UNLIKE_STATUS {
+			err = util.DB.Model(relation).
+				Where("user_id = ? AND video_id = ?", userId, videoId).
+				Update("cancel", config.LIKE_STATUS).Error
+		} else {
+			err = util.DB.Model(relation).
+				Where("user_id = ? AND video_id = ?", userId, videoId).
+				Update("cancel", config.UNLIKE_STATUS).Error
+		}
+
+	}
+	return err
+}
+
+// LikedVideoList 返回用户点赞的视频的集合
+func (*LikeDao) LikedVideoList(userId int64) ([]int64, error) {
+	var likes []entity.Like
+	err := util.DB.Model(entity.Like{}).
+		Where(map[string]interface{}{"user_id": userId}).
+		Find(&likes).Error
+	if err != nil {
+		log.Println("查询点赞关系出错")
+	}
+	result := make([]int64, len(likes), len(likes))
+	for index, like := range likes {
+		result[index] = like.VideoId
+	}
+	log.Printf("liked videoList:", result)
+	return result, err
 }
