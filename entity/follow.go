@@ -11,3 +11,10 @@ type Follow struct {
 func (follow Follow) TableName() string {
 	return "follows"
 }
+
+// UserInfoResponse 用户信息响应
+type UserInfoListResponse struct {
+	StatusCode   int32      `json:"status_code"`
+	StatusMsg    string     `json:"status_msg,omitempty"`
+	UserInfoList []UserInfo `json:"user_list"`
+}

@@ -3,6 +3,7 @@ package service
 import (
 	"douyin-backend/dao"
 	"douyin-backend/entity"
+	"log"
 
 	//"strconv"
 	"sync"
@@ -61,4 +62,35 @@ func (*FollowServiceImpl) IsFollow(userId int64, targetId int64) (*entity.Follow
 	// 用SQL查询。
 	follow, err := dao.NewFollowDaoInstance().IsFollow(userId, targetId)
 	return follow, err
+}
+
+func (*FollowServiceImpl) UpdateFollow(userId int64, targetId int64) error {
+	err := dao.NewFollowDaoInstance().UpdateFollow(userId, targetId)
+	if err != nil {
+		log.Printf("更新关注关系出错")
+	}
+	return err
+}
+
+func (*FollowServiceImpl) CreateFollow(userId int64, targetId int64) error {
+	follow, err := dao.NewFollowDaoInstance().IsFollow(userId, targetId)
+	log.Println("新增关注:", follow)
+	return err
+}
+
+func (*FollowServiceImpl) FollowList(userId int64, tagetId int64) ([]entity.UserInfo, error) {
+	//首先获取目标用户的关注用户id列表
+	following, err := dao.NewFollowDaoInstance().GetFollowingList(tagetId)
+	//组装成UserInfo
+	var followingUserInfo = make([]entity.UserInfo, len(following), len(following))
+	if userId != 0 {
+		for index, _ := range following {
+			followingUserInfo[index] = NewUserServiceImplInstance().GetUserInfo(userId, following[index])
+		}
+	} else {
+		for index, _ := range following {
+			followingUserInfo[index] = NewUserServiceImplInstance().UNGetUserInfo(following[index])
+		}
+	}
+	return followingUserInfo, err
 }

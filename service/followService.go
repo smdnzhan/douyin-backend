@@ -9,4 +9,5 @@ type FollowService interface {
 	// GetFollowingCnt 根据用户id来查询用户关注了多少其它用户
 	GetFollowingCnt(userId int64) (int64, error)
 	IsFollow(userId int64, targetId int64) (*entity.Follow, error)
+	UpdateFollow(userId int64, targetId int64) error
 }

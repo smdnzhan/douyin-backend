@@ -22,4 +22,8 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/favorite/list/", middleware.QueryAuth(), controller.FavoriteList)
 	apiRouter.POST("/comment/action/", middleware.QueryAuth(), controller.CommentAction)
 	apiRouter.GET("/comment/list/", middleware.LoginOrNot(), controller.CommentList)
+
+	//扩展功能2
+	apiRouter.POST("/relation/action/", middleware.QueryAuth(), controller.Follow)
+	apiRouter.GET("/relation/follow/list/", middleware.LoginOrNot(), controller.FollowList)
 }
