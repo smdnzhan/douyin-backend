@@ -16,3 +16,22 @@ type Comment struct {
 func (Comment) TableName() string {
 	return "comments"
 }
+
+// CommentInfo 返回评论信息
+type CommentInfo struct {
+	Id         int64 `json:"id,omitempty"`
+	UserInfo   `json:"user,omitempty"`
+	Content    string `json:"content,omitempty"`
+	CreateDate string `json:"create_date,omitempty"`
+}
+type CommentInfoResponse struct {
+	StatusCode  int32  `json:"status_code"`
+	StatusMsg   string `json:"status_msg,omitempty"`
+	CommentInfo `json:"comment,omitempty"`
+}
+
+type CommentInfoListResponse struct {
+	StatusCode      int32         `json:"status_code"`
+	StatusMsg       string        `json:"status_msg,omitempty"`
+	CommentInfoList []CommentInfo `json:"comment_list,omitempty"`
+}

@@ -20,4 +20,6 @@ func initRouter(r *gin.Engine) {
 	//扩展功能
 	apiRouter.POST("/favorite/action/", middleware.QueryAuth(), controller.Favorite)
 	apiRouter.GET("/favorite/list/", middleware.QueryAuth(), controller.FavoriteList)
+	apiRouter.POST("/comment/action/", middleware.QueryAuth(), controller.CommentAction)
+	apiRouter.GET("/comment/list/", middleware.LoginOrNot(), controller.CommentList)
 }

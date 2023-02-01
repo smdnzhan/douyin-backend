@@ -74,7 +74,6 @@ func (*FollowDao) IsFollow(userId int64, targetId int64) (*entity.Follow, error)
 		if "record not found" == err.Error() {
 			return nil, nil
 		}
-		log.Println(err.Error())
 		return &follow, err
 	}
 	log.Println("follow查询结果:", follow)

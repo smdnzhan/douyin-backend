@@ -122,6 +122,5 @@ func (*LikeDao) LikedVideoList(userId int64) ([]int64, error) {
 	for index, like := range likes {
 		result[index] = like.VideoId
 	}
-	log.Printf("liked videoList:", result)
 	return result, err
 }

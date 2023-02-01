@@ -100,7 +100,6 @@ func UserInfo(c *gin.Context) {
 		log.Println("当前用户是登录用户")
 		result = usi.GetUserInfo(userIdInt, targetIdInt)
 	}
-	log.Println("result:", result)
 	c.JSON(http.StatusOK, entity.UserInfoResponse{
 		StatusCode: 0,
 		StatusMsg:  "Success",
